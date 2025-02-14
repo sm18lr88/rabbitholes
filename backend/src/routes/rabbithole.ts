@@ -24,6 +24,11 @@ interface SearchResponse {
         author: string;
         image: string;
     }>;
+    images: Array<{
+        url: string;
+        thumbnail: string;
+        description: string;
+    }>;
 }
 
 export function setupRabbitHoleRoutes(_runtime: any) {
@@ -42,6 +47,7 @@ export function setupRabbitHoleRoutes(_runtime: any) {
             const searchResults = await tavilyClient.search(query, {
                 searchDepth: "basic",
                 includeImages: true,
+                includeImageDescriptions: true,
                 includeAnswer: true,
                 maxResults: 5,
             });
@@ -104,11 +110,19 @@ Remember: Do not use :item[] tags in the follow-up questions.`,
                 image: result.image || "",
             }));
 
+            const images = searchResults.images
+                .map((result: any) => ({
+                    url: result.url,
+                    thumbnail: result.url,
+                    description: result.description || "",
+                }));
+
             const searchResponse: SearchResponse = {
                 response,
                 followUpQuestions,
                 contextualQuery: query,
                 sources,
+                images,
             };
 
             res.json(searchResponse);
