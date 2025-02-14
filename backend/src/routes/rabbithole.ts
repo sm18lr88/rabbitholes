@@ -97,10 +97,20 @@ Remember: Do not use :item[] tags in the follow-up questions.`,
             const completion = (await openAIService.createChatCompletion(messages, "gemini")) as OpenAI.Chat.ChatCompletion;
             const response = completion.choices?.[0]?.message?.content ?? "";
 
-            const followUpQuestions = response
-                .split("\n")
-                .filter((line: string) => line.trim().includes("?"))
-                .slice(-3);
+            // Extract follow-up questions more precisely by looking for the section
+            const followUpSection = response.split("Follow-up Questions:")[1];
+            const followUpQuestions = followUpSection
+                ? followUpSection
+                    .trim()
+                    .split("\n")
+                    .filter((line) => line.trim())
+                    .map((line) => line.replace(/^\d+\.\s+/, "").trim())
+                    .filter((line) => line.includes("?"))
+                    .slice(0, 3)
+                : [];
+
+            // Remove the Follow-up Questions section from the main response
+            const mainResponse = response.split("Follow-up Questions:")[0].trim();
 
             const sources = searchResults.results.map((result: any) => ({
                 title: result.title || "",
@@ -118,7 +128,7 @@ Remember: Do not use :item[] tags in the follow-up questions.`,
                 }));
 
             const searchResponse: SearchResponse = {
-                response,
+                response: mainResponse,
                 followUpQuestions,
                 contextualQuery: query,
                 sources,
