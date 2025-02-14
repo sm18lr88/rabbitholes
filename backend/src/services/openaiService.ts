@@ -1,5 +1,4 @@
 import OpenAI from "openai";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -20,7 +19,7 @@ export interface ModelConfig {
 
 export class OpenAIService {
     private static instance: OpenAIService;
-    private clients: Map<string, OpenAI | GoogleGenerativeAI>;
+    private clients: Map<string, OpenAI>;
     private modelConfigs: ModelConfig;
 
     private constructor() {
@@ -46,27 +45,19 @@ export class OpenAIService {
         return OpenAIService.instance;
     }
 
-    private getClient(provider: string): OpenAI | GoogleGenerativeAI {
+    private getClient(provider: string): OpenAI {
         if (!this.clients.has(provider)) {
             const config = this.modelConfigs[provider];
             if (!config) {
                 throw new Error(`Provider ${provider} not configured`);
             }
-            
-            if (provider === "gemini") {
-                this.clients.set(
-                    provider,
-                    new GoogleGenerativeAI(config.apiKey)
-                );
-            } else {
-                this.clients.set(
-                    provider,
-                    new OpenAI({
-                        baseURL: config.baseURL,
-                        apiKey: config.apiKey,
-                    })
-                );
-            }
+            this.clients.set(
+                provider,
+                new OpenAI({
+                    baseURL: config.baseURL,
+                    apiKey: config.apiKey,
+                })
+            );
         }
         return this.clients.get(provider)!;
     }
@@ -81,41 +72,13 @@ export class OpenAIService {
     ) {
         const client = this.getClient(provider);
         const config = this.modelConfigs[provider];
-
-        if (provider === "gemini") {
-            const geminiClient = client as GoogleGenerativeAI;
-            const model = geminiClient.getGenerativeModel({ model: config.model });
-
-            // Format messages for Gemini
-            const formattedContent = messages.map(msg => {
-                const content = typeof msg.content === 'string' 
-                    ? msg.content 
-                    : msg.content.map(part => part.text || '').join(' ');
-                return content;
-            }).join('\n');
-
-            const result = await model.generateContent(formattedContent);
-            const response = await result.response;
-            
-            return {
-                choices: [{
-                    message: {
-                        role: 'assistant',
-                        content: response.text()
-                    },
-                    index: 0,
-                    finish_reason: 'stop'
-                }]
-            } as OpenAI.Chat.ChatCompletion;
-        } else {
-            const openaiClient = client as OpenAI;
-            return await openaiClient.chat.completions.create({
-                messages: messages as any,
-                model: config.model,
-                stream: false,
-                ...options,
-            });
-        }
+        const response = await client.chat.completions.create({
+            messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
+            model: config.model,
+            stream: false,
+            ...options,
+        });
+        return response as OpenAI.Chat.ChatCompletion;
     }
 
     public async createStreamCompletion(
@@ -129,33 +92,16 @@ export class OpenAIService {
     ) {
         const client = this.getClient(provider);
         const config = this.modelConfigs[provider];
-
-        if (provider === "gemini") {
-            const geminiClient = client as GoogleGenerativeAI;
-            const model = geminiClient.getGenerativeModel({ model: config.model });
-
-            // Format messages for Gemini
-            const formattedContent = messages.map(msg => {
-                const content = typeof msg.content === 'string' 
-                    ? msg.content 
-                    : msg.content.map(part => part.text || '').join(' ');
-                return content;
-            }).join('\n');
-
-            const result = await model.generateContentStream(formattedContent);
-            return result;
-        } else {
-            const openaiClient = client as OpenAI;
-            return await openaiClient.chat.completions.create(
-                {
-                    messages: messages as any,
-                    model: config.model,
-                    stream: true,
-                    ...options,
-                },
-                { signal }
-            );
-        }
+        const stream = await client.chat.completions.create(
+            {
+                messages: messages as OpenAI.Chat.ChatCompletionMessageParam[],
+                model: config.model,
+                stream: true,
+                ...options,
+            },
+            { signal }
+        );
+        return stream;
     }
 
     public getModelConfig(provider: string) {
