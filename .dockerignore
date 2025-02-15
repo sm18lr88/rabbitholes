@@ -1,0 +1,17 @@
+node_modules
+**/node_modules
+npm-debug.log
+.git
+.gitignore
+.env
+**/.env
+.env.*
+**/.env.*
+!frontend/.env.production
+.DS_Store
+**/dist
+**/build
+README.md
+**/README.md
+.vscode
+.idea 

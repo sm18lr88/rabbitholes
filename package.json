@@ -14,8 +14,9 @@
     "frontend:build": "cd frontend && npm run build",
     "frontend:start": "cd frontend && npm start",
     "dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\"",
-    "build": "concurrently \"npm run backend:build\" \"npm run frontend:build\"",
-    "start": "concurrently \"npm run backend:start\" \"npm run frontend:start\""
+    "build": "npm run frontend:build && npm run backend:build && npm run copy-frontend",
+    "start": "cd backend && npm start",
+    "copy-frontend": "cp -r frontend/build backend/dist/frontend"
   },
   "devDependencies": {
     "concurrently": "^8.0.0"

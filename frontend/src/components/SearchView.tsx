@@ -7,6 +7,7 @@ import gsap from 'gsap';
 import RabbitFlow from './RabbitFlow';
 import MainNode from './nodes/MainNode';
 import '../styles/search.css';
+import { searchRabbitHole } from '../services/api';
 
 const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
@@ -214,6 +215,7 @@ const SearchView: React.FC = () => {
   const [edges, setEdges] = useState<Edge[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([]);
+  const [currentConcept, setCurrentConcept] = useState<string>('');
 
   const thothDeckRef = useRef<HTMLDivElement>(null);
   const anubisDeckRef = useRef<HTMLDivElement>(null);
@@ -247,17 +249,9 @@ const SearchView: React.FC = () => {
             style: {
               ...n.style,
               width: nodeWidth,
-              minHeight: '500px',
-              background: '#1a1a1a',
-              opacity: 0.7
+              height: nodeHeight
             },
-            data: {
-              ...n.data,
-              content: 'Loading...',
-              images: [],
-              sources: [],
-              isExpanded: true
-            }
+            data: { ...n.data, isExpanded: true }
           };
         }
         return n;
@@ -265,10 +259,10 @@ const SearchView: React.FC = () => {
 
       setNodes(loadingNodes);
 
-      // eh... need to make this a real API call
-      const response = await axios.post('http://localhost:3000/api/rabbitholes/search', {
+      const response = await searchRabbitHole({
         query: questionText,
         previousConversation: conversationHistory,
+        concept: currentConcept,
         followUpMode: 'expansive'
       });
 
@@ -286,10 +280,10 @@ const SearchView: React.FC = () => {
               cursor: 'default' 
             },
             data: {
-              label: response.data.contextualQuery || questionText,
-              content: response.data.response,
-              images: response.data.images?.map((img: ImageData) => img.url),
-              sources: response.data.sources,
+              label: response.contextualQuery || questionText,
+              content: response.response,
+              images: response.images?.map((img: ImageData) => img.url),
+              sources: response.sources,
               isExpanded: true 
             }
           };
@@ -298,7 +292,7 @@ const SearchView: React.FC = () => {
       });
 
       // Create new follow-up nodes for the transformed node
-      const newFollowUpNodes: Node[] = response.data.followUpQuestions.map((question: string, index: number) => ({
+      const newFollowUpNodes: Node[] = response.followUpQuestions.map((question: string, index: number) => ({
         id: `question-${node.id}-${index}`,
         type: 'default',
         data: { 
@@ -371,23 +365,25 @@ const SearchView: React.FC = () => {
   };
 
   const handleSearch = async () => {
+    if (!query.trim()) return;
+
     try {
       setIsLoading(true);
-      // eh... need to make this a real API call
-      const response = await axios.post('http://localhost:3000/api/rabbitholes/search', {
+      const response = await searchRabbitHole({
         query,
         previousConversation: conversationHistory,
+        concept: currentConcept,
         followUpMode: 'expansive'
       });
-      setSearchResult(response.data);
+      setSearchResult(response);
       const mainNode: Node = {
         id: 'main',
         type: 'mainNode',
         data: { 
-          label: response.data.contextualQuery || query,
-          content: response.data.response,
-          images: response.data.images?.map((img: ImageData) => img.url),
-          sources: response.data.sources,
+          label: response.contextualQuery || query,
+          content: response.response,
+          images: response.images?.map((img: ImageData) => img.url),
+          sources: response.sources,
           isExpanded: true 
         },
         position: { x: 0, y: 0 },
@@ -402,7 +398,7 @@ const SearchView: React.FC = () => {
         }
       };
 
-      const followUpNodes: Node[] = response.data.followUpQuestions.map((question: string, index: number) => ({
+      const followUpNodes: Node[] = response.followUpQuestions.map((question: string, index: number) => ({
         id: `question-${index}`,
         type: 'default',
         data: { 

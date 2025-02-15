@@ -1,3 +1,116 @@
+# 🐰 RabbitHole - Knowledge Explorer
+
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/)
+
+## 🚀 Quick Deploy
+
+### Railway Deployment
+
+1. Click the "Deploy on Railway" button above
+2. Set up your environment variables in Railway:
+   ```
+   TAVILY_API_KEY=your_tavily_api_key
+   GOOGLE_AI_API_KEY=your_google_ai_api_key
+   ```
+3. Railway will automatically detect the Dockerfile and deploy your application
+
+## 🛠️ Local Development
+
+### Prerequisites
+- Node.js 18 or higher
+- npm or yarn
+- Docker (optional)
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/rabbitholes.git
+cd rabbitholes
+```
+
+2. Install dependencies:
+```bash
+npm install
+```
+
+3. Create environment files:
+
+For backend (backend/.env):
+```env
+PORT=3000
+TAVILY_API_KEY=your_tavily_api_key
+GOOGLE_AI_API_KEY=your_google_ai_api_key
+```
+
+For frontend (frontend/.env.development):
+```env
+REACT_APP_API_URL=http://localhost:3000/api
+```
+
+4. Start development servers:
+```bash
+# Start both frontend and backend in development mode
+npm run dev
+
+# Or start them separately
+npm run frontend:dev
+npm run backend:dev
+```
+
+## 🐳 Docker Development
+
+1. Build the Docker image:
+```bash
+docker build -t rabbitholes .
+```
+
+2. Run the container:
+```bash
+docker run -p 3000:3000 \
+  -e TAVILY_API_KEY=your_tavily_api_key \
+  -e GOOGLE_AI_API_KEY=your_google_ai_api_key \
+  rabbitholes
+```
+
+Or using docker-compose:
+
+```bash
+docker-compose up
+```
+
+## 📦 Project Structure
+
+```
+rabbitholes/
+├── frontend/              # React frontend
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── backend/              # Express backend
+│   ├── src/
+│   └── package.json
+├── Dockerfile           # Production Dockerfile
+├── docker-compose.yml   # Docker compose configuration
+└── package.json        # Root package.json for workspace
+```
+
+## 🔑 Environment Variables
+
+### Backend Variables
+- `PORT` - Server port (default: 3000)
+- `TAVILY_API_KEY` - Your Tavily API key
+- `GOOGLE_AI_API_KEY` - Your Google AI API key
+
+### Frontend Variables
+- `REACT_APP_API_URL` - Backend API URL
+  - Development: http://localhost:3000/api
+  - Production: /api
+
+## 📝 License
+
+MIT
+
 # Open RabbitHoles 🐰
 
 [!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/sheing)
