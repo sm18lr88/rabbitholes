@@ -1,8 +1,21 @@
 # Open RabbitHoles 🐰
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://buymeacoffee.com/sheing)
+
 Introducing Open RabbitHoles - an open source implementation inspired by the original RabbitHoles app, but with our own twist. Dive deep into the rabbit holes without the premium price tag. This tool helps you dive deep into any topics, discover unexpected connections, and visualize your research journey in an interactive mind map.
 
 Built with React, Node.js, and powered by a combination of Tavily and Google AI, this implementation offers a unique approach to mind map style exploration and knowledge mapping.
+
+## Screenshots 📸
+
+![Main Interface](screenshots/main-interface.png)
+*The main interface showing the "SEEK KNOWLEDGE" header and search functionality*
+
+![Consciousness Exploration](screenshots/consciousness-map.png)
+*An example exploration map showing topics around cosmic consciousness, panpsychism, and quantum entanglement*
+
+![Da Vinci Mysteries](screenshots/davinci-mysteries.png)
+*Exploring connections between Da Vinci's work and scientific mysteries*
 
 ## Why Open RabbitHoles? 🤔
 

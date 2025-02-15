@@ -47,6 +47,7 @@ export function setupRabbitHoleRoutes(_runtime: any) {
             const searchResults = await tavilyClient.search(query, {
                 searchDepth: "basic",
                 includeImages: true,
+                includeAnswer: true,
                 maxResults: 3,
             });
 

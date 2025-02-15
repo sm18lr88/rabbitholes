@@ -34,19 +34,6 @@ export function BounceCards({
     setValidImages(images);
   }, [images]);
 
-  useEffect(() => {
-    gsap.fromTo(
-      ".card",
-      { scale: 0 },
-      {
-        scale: 1,
-        stagger: animationStagger,
-        ease: easeType,
-        delay: animationDelay
-      }
-    )
-  }, [animationStagger, easeType, animationDelay, validImages])
-
   const handleMouseEnter = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     gsap.to(e.currentTarget, {
       scale: 1.1,
