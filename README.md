@@ -1,4 +1,4 @@
-# 🐰 RabbitHole - Knowledge Explorer
+# 🐰 Open Source RabbitHole - Knowledge Explorer
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/)
 
@@ -292,4 +292,4 @@ This project is powered by [Dojoma AI](https://dojoma.ai). Special thanks to tea
 
 
 ---
-Built with ❤️ 
+Built with ❤️ + 🇺🇸
