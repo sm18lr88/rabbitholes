@@ -13,7 +13,7 @@ const dagreGraph = new dagre.graphlib.Graph();
 dagreGraph.setDefaultEdgeLabel(() => ({}));
 
 const nodeWidth = 600;
-const nodeHeight = 800;
+const nodeHeight = 500;
 const questionNodeWidth = 300;
 const questionNodeHeight = 100;
 
@@ -251,7 +251,11 @@ const SearchView: React.FC = () => {
               width: nodeWidth,
               height: nodeHeight
             },
-            data: { ...n.data, isExpanded: true }
+            data: { 
+              ...n.data, 
+              content: 'Loading...',
+              isExpanded: true 
+            }
           };
         }
         return n;
@@ -369,26 +373,21 @@ const SearchView: React.FC = () => {
 
     try {
       setIsLoading(true);
-      const response = await searchRabbitHole({
-        query,
-        previousConversation: conversationHistory,
-        concept: currentConcept,
-        followUpMode: 'expansive'
-      });
-      setSearchResult(response);
-      const mainNode: Node = {
+      const loadingNode: Node = {
         id: 'main',
         type: 'mainNode',
         data: { 
-          label: response.contextualQuery || query,
-          content: response.response,
-          images: response.images?.map((img: ImageData) => img.url),
-          sources: response.sources,
+          label: query,
+          content: 'Loading...',
+          images: [],
+          sources: [],
           isExpanded: true 
         },
         position: { x: 0, y: 0 },
         style: {
           width: nodeWidth,
+          height: nodeHeight,
+          minHeight: nodeHeight,
           background: '#1a1a1a',
           color: '#fff',
           border: '1px solid #333',
@@ -398,6 +397,27 @@ const SearchView: React.FC = () => {
         }
       };
 
+      setNodes([loadingNode]);
+      setEdges([]);
+
+      const response = await searchRabbitHole({
+        query,
+        previousConversation: conversationHistory,
+        concept: currentConcept,
+        followUpMode: 'expansive'
+      });
+      setSearchResult(response);
+      
+      const mainNode: Node = {
+        ...loadingNode,
+        data: { 
+          label: response.contextualQuery || query,
+          content: response.response,
+          images: response.images?.map((img: ImageData) => img.url),
+          sources: response.sources,
+          isExpanded: true 
+        }
+      };
       const followUpNodes: Node[] = response.followUpQuestions.map((question: string, index: number) => ({
         id: `question-${index}`,
         type: 'default',
