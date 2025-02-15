@@ -47,9 +47,7 @@ export function setupRabbitHoleRoutes(_runtime: any) {
             const searchResults = await tavilyClient.search(query, {
                 searchDepth: "basic",
                 includeImages: true,
-                includeImageDescriptions: true,
-                includeAnswer: true,
-                maxResults: 5,
+                maxResults: 3,
             });
 
             const conversationContext = previousConversation
@@ -67,20 +65,12 @@ export function setupRabbitHoleRoutes(_runtime: any) {
                     role: "system",
                     content: `You are an AI assistant that helps users explore topics in depth. Format your responses using markdown with headers (####).
 
-IMPORTANT FORMATTING RULES:
-1. Every technical term, concept, or key phrase in the main response MUST be wrapped in :item[] tags
-2. The :item[] tags should wrap EACH OCCURRENCE of the term, not just the first time
-3. Format: ":item[term]" - Example: ":item[quantum computing]" (not "quantum :item[computing]")
-4. Wrap complete phrases, not partial words
-5. Be consistent - if you tag a term once, tag it every time it appears
-6. Headers (####) should not be wrapped in :item[] tags
-7. Follow-up questions should NOT use :item[] tags - write them in plain text
-
 Your goal is to provide comprehensive, accurate information while maintaining engagement.
 Base your response on the search results provided, and structure it clearly with relevant sections.
 
 After your main response, include a "Follow-up Questions:" section with 3 consice questions that would help users explore the topic further.
-Remember: Do not use :item[] tags in the follow-up questions.`,
+One of the questions should be a question that is related to the search results, and the other two should be either thought provoking questions or devil's advocate/conspiracy questions.
+`,
                 },
                 {
                     role: "user",
@@ -88,7 +78,7 @@ Remember: Do not use :item[] tags in the follow-up questions.`,
                         searchResults
                     )}\n\nPlease provide a comprehensive response about ${
                         concept || query
-                    }. Include relevant facts, context, and relationships to other topics. Format the response in markdown with #### headers and wrap key terms in :item[] tags. The response should be ${
+                    }. Include relevant facts, context, and relationships to other topics. Format the response in markdown with #### headers. The response should be ${
                         followUpMode === "expansive" ? "broad and exploratory" : "focused and specific"
                     }.`,
                 },
