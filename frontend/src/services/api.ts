@@ -14,8 +14,8 @@ export const searchRabbitHole = async (params: {
     previousConversation?: Array<{ user?: string; assistant?: string }>;
     concept?: string;
     followUpMode?: "expansive" | "focused";
-}) => {
-    const response = await api.post('/rabbitholes/search', params);
+}, signal?: AbortSignal) => {
+    const response = await api.post('/rabbitholes/search', params, { signal });
     return response.data;
 };
 

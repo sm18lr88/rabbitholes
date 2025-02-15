@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from "react"
 import { gsap } from "gsap"
+import { Modal } from "./Modal"
 
 interface BounceCardsProps {
   className?: string
@@ -29,6 +30,7 @@ export function BounceCards({
   ]
 }: BounceCardsProps) {
   const [validImages, setValidImages] = useState<string[]>(images);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     setValidImages(images);
@@ -56,34 +58,53 @@ export function BounceCards({
     setValidImages(current => current.filter(src => src !== failedImageSrc));
   }, []);
 
+  const handleImageClick = useCallback((src: string) => {
+    setSelectedImage(src);
+  }, []);
+
   return (
-    <div
-      className={`relative ${className}`}
-      style={{
-        width: containerWidth,
-        height: containerHeight
-      }}
-    >
-      {validImages.map((src, idx) => (
-        <div
-          key={src}
-          className="card absolute w-[120px] aspect-square rounded-[18px] overflow-hidden border-1 border-white/90 shadow-lg shadow-black/20 cursor-pointer transition-shadow duration-300 hover:shadow-xl hover:shadow-black/30"
-          style={{
-            transform: transformStyles[idx] !== undefined ? transformStyles[idx] : "none",
-            zIndex: 1
-          }}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+    <>
+      <div
+        className={`relative ${className}`}
+        style={{
+          width: containerWidth,
+          height: containerHeight
+        }}
+      >
+        {validImages.map((src, idx) => (
+          <div
+            key={src}
+            className="card absolute w-[120px] aspect-square rounded-[18px] overflow-hidden border-1 border-white/90 shadow-lg shadow-black/20 cursor-pointer transition-shadow duration-300 hover:shadow-xl hover:shadow-black/30"
+            style={{
+              transform: transformStyles[idx] !== undefined ? transformStyles[idx] : "none",
+              zIndex: 1
+            }}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+            onClick={() => handleImageClick(src)}
+          >
+            <img
+              className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+              src={src}
+              alt={`card-${idx}`}
+              loading="lazy"
+              onError={() => handleImageError(src)}
+            />
+          </div>
+        ))}
+      </div>
+      <Modal
+        isOpen={!!selectedImage}
+        onClose={() => setSelectedImage(null)}
+      >
+        {selectedImage && (
           <img
-            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
-            src={src}
-            alt={`card-${idx}`}
-            loading="lazy"
-            onError={() => handleImageError(src)}
+            src={selectedImage}
+            alt="Selected"
+            className="max-w-full max-h-[85vh] object-contain rounded-lg"
           />
-        </div>
-      ))}
-    </div>
+        )}
+      </Modal>
+    </>
   )
 } 
