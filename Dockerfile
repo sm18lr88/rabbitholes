@@ -1,5 +1,5 @@
 # Use Node.js LTS version
-FROM node:18-alpine as builder
+FROM node:18-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -19,7 +19,7 @@ COPY . .
 RUN npm run build
 
 # Production stage
-FROM node:18-alpine as production
+FROM node:18-alpine AS production
 
 WORKDIR /app
 
@@ -46,4 +46,4 @@ ENV PORT=3000
 ENV NODE_ENV=production
 
 # Start the server with debugging
-CMD ["sh", "-c", "cd backend && node dist/server.js"] 
+CMD ["sh", "-c", "cd backend && node dist/server.js"]
