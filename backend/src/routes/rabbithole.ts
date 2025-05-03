@@ -68,8 +68,9 @@ export function setupRabbitHoleRoutes(_runtime: any) {
 Your goal is to provide comprehensive, accurate information while maintaining engagement.
 Base your response on the search results provided, and structure it clearly with relevant sections.
 
-After your main response, include a "Follow-up Questions:" section with 3 consice questions that would help users explore the topic further.
+After your main response, include a "Follow-up Questions:" section with 3 concise questions that would help users explore the topic further.
 One of the questions should be a question that is related to the search results, and the other two should be either thought provoking questions or devil's advocate/conspiracy questions.
+ALWAYS enclose the follow-up questions section between '###START_FOLLOWUP###' and '###END_FOLLOWUP###'
 `,
                 },
                 {
@@ -87,17 +88,15 @@ One of the questions should be a question that is related to the search results,
             const completion = (await openAIService.createChatCompletion(messages, "gemini")) as OpenAI.Chat.ChatCompletion;
             const response = completion.choices?.[0]?.message?.content ?? "";
 
-            // Extract follow-up questions more precisely by looking for the section
-            const followUpSection = response.split("Follow-up Questions:")[1];
-            const followUpQuestions = followUpSection
-                ? followUpSection
-                    .trim()
-                    .split("\n")
-                    .filter((line) => line.trim())
-                    .map((line) => line.replace(/^\d+\.\s+/, "").trim())
-                    .filter((line) => line.includes("?"))
-                    .slice(0, 3)
-                : [];
+            // Extract follow-up questions using enclosure markers
+            const match = response.match(/###START_FOLLOWUP###([\s\S]*?)###END_FOLLOWUP###/);
+            let followUpQuestions: string[] = [];
+            if (match) {
+                followUpQuestions = match[1]
+                    .split('\n')
+                    .map(line => line.replace(/^[\s*-]*\d*\.?\s*/, '').trim())
+                    .filter(Boolean);
+            }
 
             // Remove the Follow-up Questions section from the main response
             const mainResponse = response.split("Follow-up Questions:")[0].trim();
@@ -136,4 +135,4 @@ One of the questions should be a question that is related to the search results,
     });
 
     return router;
-} 
+}

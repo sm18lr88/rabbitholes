@@ -1,15 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import ReactFlow, {
   Node,
   Edge,
   NodeTypes,
-  OnNodesChange,
-  OnEdgesChange,
-  OnConnect,
   Connection,
   useNodesState,
   useEdgesState,
-  Panel,
   Controls,
   Background,
   BackgroundVariant,
@@ -100,42 +96,36 @@ const RabbitFlow: React.FC<RabbitFlowProps> = ({
     );
     setNodes(layoutedNodes);
     setEdges(layoutedEdges);
-  }, [initialNodes, initialEdges]);
+  }, [initialNodes, initialEdges, setNodes, setEdges]);
 
-  const onConnect = useCallback(
-    (params: Connection) =>
-      setEdges((eds) =>
-        addEdge(
-          {
-            ...params,
-            type: ConnectionLineType.SmoothStep,
-            animated: true
-          },
-          eds
-        )
-      ),
-    [setEdges]
-  );
+  const onConnect = (params: Connection) =>
+    setEdges((eds) =>
+      addEdge(
+        {
+          ...params,
+          type: ConnectionLineType.SmoothStep,
+          animated: true
+        },
+        eds
+      )
+    );
 
   const posthog = usePostHog();
 
-  const handleNodeClick = useCallback(
-    (_: React.MouseEvent, node: Node) => {
-      if (posthog) {
-        posthog.capture('node_clicked', {
-          nodeId: node.id,
-          nodeType: node.type,
-          label: node.data?.label || '',
-          position: node.position,
-        });
-      }
+  const handleNodeClick = (_: React.MouseEvent, node: Node) => {
+    if (posthog) {
+      posthog.capture('node_clicked', {
+        nodeId: node.id,
+        nodeType: node.type,
+        label: node.data?.label || '',
+        position: node.position,
+      });
+    }
 
-      if (onNodeClick) {
-        onNodeClick(node);
-      }
-    },
-    [onNodeClick, posthog]  // important: add posthog to dependency array
-  );
+    if (onNodeClick) {
+      onNodeClick(node);
+    }
+  };
 
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
@@ -160,7 +150,7 @@ const RabbitFlow: React.FC<RabbitFlowProps> = ({
         style={{ backgroundColor: '#000000' }}
       >
         <Controls
-          className="!bg-[#111111] !border-gray-800"
+          className="bg-[#111111]! border-gray-800!"
         />
         <MiniMap
           style={{
@@ -170,7 +160,7 @@ const RabbitFlow: React.FC<RabbitFlowProps> = ({
           }}
           nodeColor="#666666"
           maskColor="rgba(0, 0, 0, 0.7)"
-          className="!bottom-4 !right-4"
+          className="bottom-4! right-4!"
         />
         <Background
           variant={BackgroundVariant.Dots}
@@ -183,4 +173,4 @@ const RabbitFlow: React.FC<RabbitFlowProps> = ({
   );
 };
 
-export default RabbitFlow; 
+export default RabbitFlow;

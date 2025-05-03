@@ -17,18 +17,18 @@ app.use(cors({
 app.use(express.json());
 
 // Add health check endpoint
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req: express.Request, res: express.Response) => {
   res.status(200).json({ status: 'healthy' });
 });
 
 app.use('/api', setupRabbitHoleRoutes(null));
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, '../../frontend/build')));
+app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
 // Handle any remaining requests by serving the index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../../frontend/build/index.html'));
+app.get('*', (req: express.Request, res: express.Response) => {
+  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
 });
 
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
@@ -38,4 +38,4 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-}); 
+});

@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "es2020",
     "module": "commonjs",
-    "lib": ["es2020"],
+    "lib": ["es2020", "dom"],
+    "types": ["node", "express", "cors"],
+    "noImplicitAny": false,
     "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
@@ -14,4 +16,4 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
-} 
+}

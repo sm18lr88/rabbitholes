@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React from 'react';
 import { Handle, Position, NodeProps } from 'reactflow';
 import ReactMarkdown from 'react-markdown';
 import { BounceCards } from '../ui/bounce-cards';
@@ -97,7 +97,7 @@ const MainNode = ({ data }: NodeProps<MainNodeData>) => {
                       rel="noopener noreferrer"
                       className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors group break-all"
                     >
-                      <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-gray-800 rounded overflow-hidden">
+                      <div className="shrink-0 w-8 h-8 flex items-center justify-center bg-gray-800 rounded-sm overflow-hidden">
                         <img
                           src={getFaviconUrl(source.url)}
                           alt=""
@@ -124,4 +124,4 @@ const MainNode = ({ data }: NodeProps<MainNodeData>) => {
   );
 };
 
-export default memo(MainNode); 
+export default MainNode;
