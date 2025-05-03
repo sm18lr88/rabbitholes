@@ -1,12 +1,10 @@
 # Open Source RabbitHole - Knowledge Explorer
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/)
-
 ---
 
-## ⚡️ Fork Changes (2025)
+## ⚡️ Fork Changes
 
-This fork modernizes the project for easier local development and deployment:
+This fork is an exercise. Key changes:
 
 - **Frontend migrated to Vite** (from Create React App)
 - **Yarn** is now the default package manager (instead of npm)
