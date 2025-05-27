@@ -1,17 +1,21 @@
 # Open Source RabbitHole - Knowledge Explorer
 
+## Features
+
+- Interactive mind-map style exploration
+- AI-powered content generation and connections
+- Beautiful, fluid UI with React Flow
+- Real-time topic exploration and visualization
+- Seamless backend integration with OpenAI, Tavily, and Google AI
+
 ---
 
-## ⚡️ Fork Changes
-
-This fork is an exercise. Key changes:
+## Fork Changes
 
 - **Frontend migrated to Vite** (from Create React App)
 - **Yarn** is now the default package manager (instead of npm)
-- **Backend pinned to Express 4.x** for compatibility
 - **Environment variables** for the frontend must use the `VITE_` prefix and be placed in `frontend/.env`
 - **Unified startup script:** Use `start-rabbitholes.bat` to launch both backend and frontend
-- **TypeScript and ESLint** configuration updated for Vite compatibility
 
 ---
 
@@ -19,7 +23,6 @@ This fork is an exercise. Key changes:
 
 - **Node.js 18.x or higher** (install from [nodejs.org](https://nodejs.org/) or use [NVM for Windows](https://github.com/coreybutler/nvm-windows) for version management; NVM is optional)
 - **Yarn** (classic, v1.x)
-- **Windows** (for `.bat` script; adapt for Mac/Linux as needed)
 - **(Optional) Docker** for containerized deployment
 
 ---
@@ -28,7 +31,7 @@ This fork is an exercise. Key changes:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/rabbitholes.git
+   git clone https://github.com/sm18lr88/rabbitholes.git
    cd rabbitholes
    ```
 
@@ -88,49 +91,6 @@ This fork is an exercise. Key changes:
    ```bash
    docker-compose up
    ```
-
----
-
-## Project Structure
-
-```
-rabbitholes/
-├── frontend/              # Vite + React frontend
-│   ├── src/
-│   ├── public/
-│   └── package.json
-├── backend/               # Express backend
-│   ├── src/
-│   └── package.json
-├── Dockerfile
-├── docker-compose.yml
-├── start-rabbitholes.bat  # Windows startup script
-└── package.json           # Yarn workspace root
-```
-
----
-
-## Environment Variables
-
-### Backend
-- `PORT` - Server port (default: 3000)
-- `TAVILY_API_KEY` - Your Tavily API key
-- `GOOGLE_AI_API_KEY` - Your Google AI API key
-
-### Frontend (Vite)
-- `VITE_PUBLIC_POSTHOG_KEY` - Your PostHog key
-- `VITE_PUBLIC_POSTHOG_HOST` - PostHog host (default: https://app.posthog.com)
-- `VITE_API_URL` - Backend API URL (e.g., http://localhost:3000/api)
-
----
-
-## Features
-
-- Interactive mind-map style exploration
-- AI-powered content generation and connections
-- Beautiful, fluid UI with React Flow
-- Real-time topic exploration and visualization
-- Seamless backend integration with OpenAI, Tavily, and Google AI
 
 ---
 
