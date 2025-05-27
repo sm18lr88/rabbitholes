@@ -8,8 +8,6 @@
 - Real-time topic exploration and visualization
 - Seamless backend integration with OpenAI, Tavily, and Google AI
 
----
-
 ## Fork Changes
 
 - **Frontend migrated to Vite** (from Create React App)
